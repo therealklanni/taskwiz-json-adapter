@@ -1,0 +1,40 @@
+{
+  "name": "taskwiz-json-adapter",
+  "description": "JSON Adapter for TaskWiz",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf dist; rollup -c && rollup -c rollup.es2015-config.js",
+    "lint": "standard index.js",
+    "posttest": "#nyc --cache --reporter=lcov --reporter=text tap --no-cov --timeout=150 test/*.js",
+    "prebuild": "npm run lint",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "test": "DEBUG=taskwiz* ava --tap | faucet",
+    "test-ci": "ava --tap | faucet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/therealklanni/taskwiz-json-adapter.git"
+  },
+  "keywords": [
+    "taskwiz",
+    "taskwiz-adapter",
+    "taskwizard",
+    "taskwarrior",
+    "task"
+  ],
+  "author": "Kevin Lanni <therealklanni@gmail.com> (https://github.com/therealklanni)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/therealklanni/taskwiz-json-adapter/issues"
+  },
+  "homepage": "https://github.com/therealklanni/taskwiz-json-adapter#readme",
+  "devDependencies": {
+    "ava": "^0.11.0",
+    "babel-preset-es2015-rollup": "^1.1.1",
+    "faucet": "0.0.1",
+    "rollup": "^0.25.1",
+    "rollup-plugin-babel": "^2.3.9",
+    "semantic-release": "^4.3.5",
+    "standard": "^5.4.1"
+  }
+}
