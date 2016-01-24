@@ -5,8 +5,10 @@
   "jsnext:main": "dist/json-adapter.es2015.js",
   "scripts": {
     "build": "rm -rf dist; babel-node --presets es2015 rollup.build.js",
+    "check-coverage": "nyc check-coverage --lines 95 --functions 95 --branches 95",
+    "coverage": "nyc --babel --cache --reporter=lcov --reporter=text ava --no-cov --timeout=150 test/*.js",
     "lint": "standard index.js",
-    "posttest": "nyc --babel --cache --reporter=lcov --reporter=text ava --no-cov --timeout=150 test/*.js",
+    "posttest": "npm run coverage",
     "prebuild": "npm run lint",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "test": "DEBUG=taskwiz* ava --tap | faucet",
