@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf dist; babel-node --presets es2015 rollup.build.js",
     "lint": "standard index.js",
-    "posttest": "#nyc --cache --reporter=lcov --reporter=text tap --no-cov --timeout=150 test/*.js",
+    "posttest": "nyc --babel --cache --reporter=lcov --reporter=text ava --no-cov --timeout=150 test/*.js",
     "prebuild": "npm run lint",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "test": "DEBUG=taskwiz* ava --tap | faucet",
@@ -34,6 +34,7 @@
     "babel-cli": "^6.4.5",
     "babel-preset-es2015-rollup": "^1.1.1",
     "faucet": "0.0.1",
+    "nyc": "^5.3.0",
     "rollup": "^0.25.1",
     "rollup-plugin-babel": "^2.3.9",
     "semantic-release": "^4.3.5",
