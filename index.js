@@ -36,7 +36,7 @@ class Adapter {
             }
 
             // Create Task file
-            fs.writeFile(this.path, '{}', {
+            fs.writeFile(this.path, '[]', {
               flag: 'w',
               mode: 0o644
             }, err => {
