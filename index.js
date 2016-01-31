@@ -4,6 +4,9 @@ const debug = bug('taskwiz:json-adapter')
 import os from 'os'
 import fs from 'fs'
 import path from 'path'
+import _ from 'highland'
+
+const fromJSON = x => JSON.parse(x.toString())
 
 class Adapter {
   constructor (options = {}) {
@@ -61,7 +64,16 @@ class Adapter {
 
   read (uuid) {
     debug(`Read ${uuid}`)
-    return Promise.reject(new Error(`Not found: ${uuid}`))
+    return new Promise((res, rej) => {
+      this.findOrCreatePath().then(taskFile => {
+        _(fs.createReadStream(taskFile))
+          .map(fromJSON)
+          .flatten()
+          .findWhere({ uuid })
+          .toArray(a =>
+            a.length ? res(a[0]) : rej(new Error(`Not found: ${uuid}`)))
+      })
+    })
   }
 
   update (task) {
