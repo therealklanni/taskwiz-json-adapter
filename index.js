@@ -36,10 +36,7 @@ class Adapter {
             }
 
             // Create Task file
-            fs.writeFile(this.path, '[]', {
-              flag: 'w',
-              mode: 0o644
-            }, err => {
+            fs.writeFile(this.path, '[]', { mode: 0o644 }, err => {
               if (err) {
                 debug(`Unable to open ${this.path} for writing`, err.message)
                 return rej(err)
@@ -78,4 +75,4 @@ class Adapter {
   }
 }
 
-export default Adapter
+export default (...args) => new Adapter(...args)

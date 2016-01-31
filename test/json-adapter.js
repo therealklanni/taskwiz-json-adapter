@@ -1,13 +1,13 @@
 import fs from 'fs'
 import test from 'ava'
-import Adapter from '../'
+import jsonAdapter from '../'
 
 const cleanup = () => {
   try { fs.unlinkSync(adapter.path) }
   catch (e) {}
 }
 
-const adapter = new Adapter({ path: './tasks.json' })
+const adapter = jsonAdapter({ path: './tasks.json' })
 const task = { uuid: '0f52edbe-1393-4f1e-8463-c23295b957a2' }
 
 test.after('cleanup', cleanup)
@@ -33,7 +33,7 @@ test.cb('findOrCreatePath method creates task file', t => {
 test('create method', t => {
   return adapter.create(task).then(result => {
     t.same(result, task)
-    t.doesNotThrow(adapter.read(task.uuid), 'Task should be readable following create')
+    t.doesNotThrow(adapter.read(task.uuid))
   })
 })
 
