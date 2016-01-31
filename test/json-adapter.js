@@ -58,11 +58,7 @@ test('read method', t => {
 // })
 
 test('rejects', async t => {
-  const uuid = '0f52edbe-1393-4f1e-8463-c23295b957a2'
-
-  await adapter.create({ uuid })
-
-  t.throws(adapter.create({ uuid }), /same uuid/)
+  t.throws(adapter.create(task), /Duplicate uuid/)
   t.throws(adapter.read('abc'), /Not found/)
-  t.throws(adapter.update({ uuid: 'abc' }), /Not found/)
+  // t.throws(adapter.update({ uuid: 'abc' }), /Not found/)
 })
