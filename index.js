@@ -113,9 +113,8 @@ class Adapter {
     debug(`Read ${uuid}`)
     return new Promise((res, rej) => {
       this.findOrCreatePath().then(taskFile => {
-        _(fs.createReadStream(taskFile))
+        createLineReaderStream(taskFile)
           .map(fromJSON)
-          .flatten()
           .findWhere({ uuid })
           .toArray(a =>
             a.length ? res(a[0]) : rej(new Error(`Not found: ${uuid}`)))
