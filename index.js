@@ -4,9 +4,22 @@ const debug = bug('taskwiz:json-adapter')
 import os from 'os'
 import fs from 'fs'
 import path from 'path'
+import { createInterface } from 'readline'
+import tempfile from 'tempfile'
 import _ from 'highland'
 
-const fromJSON = x => JSON.parse(x.toString())
+const fromJSON = x => JSON.parse(x)
+const toBuffer = x => new Buffer(`${JSON.stringify(x)}\n`)
+
+const createLineReaderStream = file => {
+  const stream = _()
+
+  createInterface({ input: fs.createReadStream(file) })
+    .on('line', line => stream.write(line))
+    .on('close', () => stream.end())
+
+  return stream
+}
 
 class Adapter {
   constructor (options = {}) {
@@ -39,7 +52,7 @@ class Adapter {
             }
 
             // Create Task file
-            fs.writeFile(this.path, '[]', { mode: 0o644 }, err => {
+            fs.writeFile(this.path, '', { mode: 0o644 }, err => {
               if (err) {
                 debug(`Unable to open ${this.path} for writing`, err.message)
                 return rej(err)
@@ -59,7 +72,41 @@ class Adapter {
 
   create (task) {
     debug('Create', task)
-    return Promise.reject(new Error('Not implemented'))
+    return new Promise((res, rej) => {
+      this.findOrCreatePath().then(taskFile => {
+        const temp = tempfile()
+        debug(`tempfile: ${temp}`)
+
+        fs.createReadStream(taskFile).pipe(fs.createWriteStream(temp))
+
+        createLineReaderStream(taskFile)
+          .map(fromJSON)
+          .findWhere({ uuid: task.uuid })
+          .toArray(a => {
+            debug('toArray', a)
+
+            if (a.length) {
+              debug(`${task.uuid} exists`)
+              rej(new Error('Duplicate uuid'))
+              fs.unlink(temp)
+            } else {
+              debug(`${task.uuid} not found, writing to file`)
+              const output = fs.createWriteStream(taskFile, { mode: 0o644 })
+                .on('finish', () => {
+                  debug(`Updated ${taskFile} written`)
+                  res(task)
+                  fs.unlink(temp)
+                })
+
+              createLineReaderStream(temp)
+                .map(fromJSON)
+                .append(task)
+                .map(toBuffer)
+                .pipe(output)
+            }
+          })
+      })
+    })
   }
 
   read (uuid) {
