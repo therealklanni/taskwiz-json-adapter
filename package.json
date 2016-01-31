@@ -12,7 +12,7 @@
     "prebuild": "npm run lint",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "test": "DEBUG=taskwiz* ava --tap --fail-fast --serial | faucet",
-    "test-ci": "ava --tap | faucet"
+    "test-ci": "ava --tap --serial | faucet"
   },
   "repository": {
     "type": "git",
