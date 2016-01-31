@@ -43,19 +43,19 @@ test('read method', t => {
   })
 })
 
-test('update method', t => {
-  const updatedTask = { status: 'pending', ...task }
-
-  return adapter.update(updatedTask).then(result => {
-    t.same(result, updatedTask)
-  })
-})
-
-test('delete method', t => {
-  return adapter.delete(task.uuid).then(() => {
-    t.throws(adapter.read(task.uuid), /Not found/)
-  })
-})
+// test.skip('update method', t => {
+//   const updatedTask = { status: 'pending', ...task }
+//
+//   return adapter.update(updatedTask).then(result => {
+//     t.same(result, updatedTask)
+//   })
+// })
+//
+// test.skip('delete method', t => {
+//   return adapter.delete(task.uuid).then(() => {
+//     t.throws(adapter.read(task.uuid), /Not found/)
+//   })
+// })
 
 test('rejects', async t => {
   const uuid = '0f52edbe-1393-4f1e-8463-c23295b957a2'
